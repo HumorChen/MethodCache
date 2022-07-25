@@ -3,6 +3,9 @@ package cn.humorchen.cache.storage;
 
 import cn.humorchen.cache.MethodCache;
 
+import java.util.Collection;
+import java.util.Map;
+
 /**
  * 方法缓存存储引擎
  *
@@ -36,4 +39,22 @@ public interface MethodCacheStorageEngine {
      * @return
      */
     Long ttl(String key);
+
+    /**
+     * 获取所有key和过期时间
+     * @return
+     */
+    Map<String,Long> getAllTtl();
+
+    /**
+     * 删除key
+     * @param key
+     */
+    void remove(String key);
+
+    /**
+     * 删除key
+     * @param keys
+     */
+    void remove(Collection<String> keys);
 }

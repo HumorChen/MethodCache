@@ -3,8 +3,10 @@ package cn.humorchen.cache.storage;
 
 import cn.humorchen.cache.MethodCache;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * 默认本地内存存储引擎
@@ -18,6 +20,10 @@ public class DefaultLocalMemoryMethodCacheStorageEngine implements MethodCacheSt
      */
     private final int INITIAL_CONTAINER_SIZE = 1024;
     /**
+     * 使用并行的阈值
+     */
+    private final int PARALLEL_THRESHOLD = 10000;
+    /**
      * 装返回值
      * key->return object
      */
@@ -27,7 +33,13 @@ public class DefaultLocalMemoryMethodCacheStorageEngine implements MethodCacheSt
      * key -> next proceed time mills
      */
     private Map<String, Long> expireMap = new HashMap<>(INITIAL_CONTAINER_SIZE);
-
+    /**
+     * 移除元素
+     */
+    private Consumer<String> consumer = (key) -> {
+        expireMap.remove(key);
+        retMap.remove(key);
+    };
 
     /**
      * 读取
@@ -63,5 +75,42 @@ public class DefaultLocalMemoryMethodCacheStorageEngine implements MethodCacheSt
     public Long ttl(String key) {
         Long expire = expireMap.get(key);
         return expire == null ? null : expire - System.currentTimeMillis();
+    }
+
+    /**
+     * 获取所有key和过期时间
+     *
+     * @return
+     */
+    @Override
+    public Map<String, Long> getAllTtl() {
+        return expireMap;
+    }
+
+    /**
+     * 删除key
+     *
+     * @param key
+     */
+    @Override
+    public void remove(String key) {
+        consumer.accept(key);
+    }
+
+    /**
+     * 删除key
+     *
+     * @param keys
+     */
+    @Override
+    public void remove(Collection<String> keys) {
+        if (keys == null){
+            return;
+        }
+        if (keys.size() < PARALLEL_THRESHOLD){
+            keys.forEach(consumer);
+        }else {
+            keys.stream().parallel().forEach(consumer);
+        }
     }
 }
