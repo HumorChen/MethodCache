@@ -1,0 +1,4 @@
+# Bootstrap components
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+cn.humorchen.cache.config.MethodCacheConfiguration,\
+cn.humorchen.cache.MethodCacheAspect
