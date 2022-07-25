@@ -45,7 +45,7 @@ public class Application implements ApplicationListener<ApplicationReadyEvent> {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
             for (int i = 0; i < 1000000; i++) {
-                dog.say("哈士奇");
+                dog.say4("哈士奇");
             }
             stopWatch.stop();
             System.out.println("执行耗时："+stopWatch.getTotalTimeSeconds());
