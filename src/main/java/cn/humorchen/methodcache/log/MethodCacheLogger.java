@@ -1,4 +1,4 @@
-package cn.humorchen.cache.log;
+package cn.humorchen.methodcache.log;
 
 import java.util.Queue;
 

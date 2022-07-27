@@ -1,11 +1,11 @@
-package cn.humorchen.cache.lru;
+package cn.humorchen.methodcache.lru;
 
 /**
  * 方法缓存淘汰算法接口
  * @author humorchen
  * @date 2022/7/25
  */
-public interface MethodCacheLru {
+public interface MethodCacheKeyManager {
     /**
      * 使用记录
      * @param key

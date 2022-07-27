@@ -1,8 +1,8 @@
-package cn.humorchen.test.dog;
+package cn.humorchen.methodcache.dog;
 
-import cn.humorchen.cache.MethodCache;
-import cn.humorchen.cache.serialize.DefaultMethodCacheArgumentSerializer;
-import cn.humorchen.cache.serialize.MethodCacheArgumentSerializer;
+import cn.humorchen.methodcache.MethodCache;
+import cn.humorchen.methodcache.serialize.DefaultMethodCacheArgumentSerializer;
+import cn.humorchen.methodcache.serialize.MethodCacheArgumentSerializer;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;

@@ -1,10 +1,11 @@
-package cn.humorchen.cache;
+package cn.humorchen.methodcache;
 
 
-import cn.humorchen.cache.enhance.MethodCacheEnhancer;
-import cn.humorchen.cache.log.MethodCacheLogger;
-import cn.humorchen.cache.storage.MethodCacheStorageEngine;
-import cn.humorchen.cache.storage.MethodCacheStorageKeyGenerator;
+import cn.humorchen.methodcache.enhance.MethodCacheEnhancer;
+import cn.humorchen.methodcache.log.MethodCacheLogger;
+import cn.humorchen.methodcache.lru.MethodCacheKeyManager;
+import cn.humorchen.methodcache.storage.MethodCacheStorageEngine;
+import cn.humorchen.methodcache.storage.MethodCacheStorageKeyGenerator;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -41,18 +42,24 @@ public class MethodCacheAspect {
      * 增强链
      */
     private List<MethodCacheEnhancer> enhancerChain;
+    /**
+     * 缓存键管理器
+     */
+    private MethodCacheKeyManager keyManager;
+
 
     @Autowired
     public MethodCacheAspect(MethodCacheLogger logger, MethodCacheStorageEngine storageEngine, MethodCacheStorageKeyGenerator methodCacheStorageKeyGenerator,
-                             List<MethodCacheEnhancer> enhancerChain) {
+                             List<MethodCacheEnhancer> enhancerChain,MethodCacheKeyManager keyManager) {
         this.logger = logger;
         this.storageEngine = storageEngine;
         this.methodCacheStorageKeyGenerator = methodCacheStorageKeyGenerator;
         this.enhancerChain = enhancerChain;
+        this.keyManager = keyManager;
     }
 
 
-    @Around("@annotation(cn.humorchen.cache.MethodCache)")
+    @Around("@annotation(cn.humorchen.methodcache.MethodCache)")
     public Object aroundMethodCache(ProceedingJoinPoint proceedingJoinPoint) {
         Object ret = null;
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
@@ -70,6 +77,8 @@ public class MethodCacheAspect {
         // 本次的调用id
         String id = UUID.randomUUID().toString();
         boolean cached = false;
+        // 键管理器写入有可能要淘汰某个key
+        String removedKey = null;
         try {
             // 增强链
             enhancerChain.forEach(methodCacheEnhancer -> methodCacheEnhancer.before(id, methodCache, key, System.currentTimeMillis(),cls, methodSignature,
@@ -79,6 +88,8 @@ public class MethodCacheAspect {
             if (ttl == null || ttl < 1) {
                 // 没有结果
                 ret = proceed(proceedingJoinPoint);
+                // 写入键
+                removedKey = keyManager.write(key);
                 // 存储结果
                 storageEngine.write(methodCache, key, ret);
                 // 日志
@@ -90,18 +101,25 @@ public class MethodCacheAspect {
             } else {
                 // 读取缓存结果
                 ret = storageEngine.read(key);
+                // 记录使用过该缓存
+                keyManager.record(key);
+                // 标记被缓存
                 cached = true;
                 // 日志
                 logger.debug(key + " used cache");
             }
+            if (removedKey != null){
+                // 删除缓存
+                storageEngine.remove(removedKey);
+            }
             // 增强链
             for (MethodCacheEnhancer enhancer : enhancerChain) {
-                enhancer.after(id, methodCache, key, System.currentTimeMillis(),cls, methodSignature, cached, args);
+                enhancer.after(id, methodCache, key, System.currentTimeMillis(),cls, methodSignature, cached,ret,removedKey, args);
             }
         } catch (Exception e) {
             logger.error("MethodCache error", e);
             for (MethodCacheEnhancer enhancer : enhancerChain) {
-                enhancer.after(id, methodCache, key, System.currentTimeMillis(),cls, methodSignature, cached, args);
+                enhancer.after(id, methodCache, key, System.currentTimeMillis(),cls, methodSignature, cached,ret,removedKey, args);
             }
         }
 

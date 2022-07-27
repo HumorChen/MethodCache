@@ -2,14 +2,14 @@
 ### 第一眼示范
 
 ```java
-import cn.humorchen.cache.MethodCache;
+import cn.humorchen.methodcache.MethodCache;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Dog {
     /**
      * 此方法会被缓存掉，当缓存存在并有效时不会执行方法，而是直接返回结果
-     * 
+     *
      * @return
      */
     @MethodCache
@@ -56,11 +56,12 @@ public @interface MethodCache {
 
 ```
 ### 一些示范
+
 ```java
 
-import cn.humorchen.cache.MethodCache;
-import cn.humorchen.cache.serialize.DefaultMethodCacheArgumentSerializer;
-import cn.humorchen.cache.serialize.MethodCacheArgumentSerializer;
+import cn.humorchen.methodcache.MethodCache;
+import cn.humorchen.methodcache.serialize.DefaultMethodCacheArgumentSerializer;
+import cn.humorchen.methodcache.serialize.MethodCacheArgumentSerializer;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -69,7 +70,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class Dog implements MethodCacheArgumentSerializer {
     public String say() {
-        return "狗子：汪汪汪"+"( "+new Date()+" )";
+        return "狗子：汪汪汪" + "( " + new Date() + " )";
     }
 
     /**
@@ -94,7 +95,7 @@ public class Dog implements MethodCacheArgumentSerializer {
      * 直接缓存该方法，缓存有效时间10分钟
      * @return
      */
-    @MethodCache(time = 10,unit = TimeUnit.MINUTES)
+    @MethodCache(time = 10, unit = TimeUnit.MINUTES)
     public String say3() {
         return say();
     }
@@ -136,7 +137,6 @@ public class Dog implements MethodCacheArgumentSerializer {
     }
 
 
-
     /**
      * 自定义参数序列化
      *
@@ -151,9 +151,10 @@ public class Dog implements MethodCacheArgumentSerializer {
 ## 可自定义的部分
 > 直接实现对应接口并注入IOC容器即可替换默认实现
 ### 存储引擎
+
 ```java
 
-import cn.humorchen.cache.MethodCache;
+import cn.humorchen.methodcache.MethodCache;
 
 /**
  * 方法缓存存储引擎
@@ -192,9 +193,10 @@ public interface MethodCacheStorageEngine {
 ```
 
 ### 存储key生成器
+
 ```java
 
-import cn.humorchen.cache.MethodCache;
+import cn.humorchen.methodcache.MethodCache;
 
 import java.lang.reflect.Method;
 

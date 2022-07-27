@@ -1,4 +1,4 @@
-package cn.humorchen.cache.serialize;
+package cn.humorchen.methodcache.serialize;
 
 import com.alibaba.fastjson.JSONObject;
 

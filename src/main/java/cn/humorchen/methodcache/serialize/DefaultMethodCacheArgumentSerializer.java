@@ -1,4 +1,4 @@
-package cn.humorchen.cache.serialize;
+package cn.humorchen.methodcache.serialize;
 
 /**
  * 默认参数序列化器

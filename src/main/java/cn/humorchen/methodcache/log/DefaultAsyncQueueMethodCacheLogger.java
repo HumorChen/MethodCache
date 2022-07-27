@@ -1,7 +1,7 @@
-package cn.humorchen.cache.log;
+package cn.humorchen.methodcache.log;
 
 
-import cn.humorchen.cache.error.MethodCacheLogQueueFullFilledException;
+import cn.humorchen.methodcache.error.MethodCacheLogQueueFullFilledException;
 
 import java.util.*;
 import java.util.concurrent.Executors;

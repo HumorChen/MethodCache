@@ -1,4 +1,4 @@
-package cn.humorchen.cache;
+package cn.humorchen.methodcache;
 
 
 import java.lang.annotation.ElementType;

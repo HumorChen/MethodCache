@@ -1,7 +1,7 @@
-package cn.humorchen.cache.error;
+package cn.humorchen.methodcache.error;
 
 
-import cn.humorchen.cache.log.MethodCacheLogLevel;
+import cn.humorchen.methodcache.log.MethodCacheLogLevel;
 
 /**
  * 日志队列满了

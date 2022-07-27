@@ -1,9 +1,8 @@
-package cn.humorchen.cache.enhance;
+package cn.humorchen.methodcache.enhance;
 
-import cn.humorchen.cache.MethodCache;
+import cn.humorchen.methodcache.MethodCache;
 import org.aspectj.lang.reflect.MethodSignature;
 
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,13 +39,13 @@ public class MethodCacheCountEnhancer implements MethodCacheEnhancer {
     /**
      * 处理前
      *
-     * @param id
-     * @param methodCache
-     * @param key
-     * @param currentTime
-     * @param cls
-     * @param methodSignature
-     * @param args
+     * @param id 调用ID（uuid）
+     * @param methodCache 方法上的缓存注解
+     * @param key 本次调用缓存的存储key
+     * @param currentTime 当前时间
+     * @param cls 被调用方法所在类
+     * @param methodSignature 方法声明
+     * @param args 方法调用参数
      */
     @Override
     public void before(String id, MethodCache methodCache, String key, long currentTime,Class<?> cls, MethodSignature methodSignature, Object... args) {
@@ -60,17 +59,20 @@ public class MethodCacheCountEnhancer implements MethodCacheEnhancer {
     /**
      * 处理后
      *
-     * @param id
-     * @param methodCache
-     * @param key
-     * @param currentTime
-     * @param cls
-     * @param methodSignature
-     * @param cached
-     * @param args
+     * @param id 调用ID（uuid）
+     * @param methodCache 方法上的缓存注解
+     * @param key 本次调用缓存的存储key
+     * @param currentTime 当前时间
+     * @param cls 被调用方法所在类
+     * @param methodSignature 方法声明
+     * @param cached 本次调用是否命中缓存
+     * @param returnObj 返回对象
+     * @param removedKey 被移除的key
+     * @param args 方法调用参数
      */
     @Override
     public void after(String id, MethodCache methodCache, String key, long currentTime,Class<?> cls, MethodSignature methodSignature, boolean cached,
+                      Object returnObj,String removedKey,
                       Object... args) {
         String methodName = getMethodName(cls,methodSignature);
         Long startTime = startTimeMap.remove(id);
@@ -115,6 +117,7 @@ public class MethodCacheCountEnhancer implements MethodCacheEnhancer {
      * 打印下情况
      */
     public void print() {
+        System.out.println("method count "+countMap.size());
         countMap.forEach((methodName, count) -> {
             long c = count.get();
             long cached = cachedMap.get(methodName).get();

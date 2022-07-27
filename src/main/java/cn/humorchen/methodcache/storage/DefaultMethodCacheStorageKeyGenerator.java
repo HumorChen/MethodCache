@@ -1,8 +1,8 @@
-package cn.humorchen.cache.storage;
+package cn.humorchen.methodcache.storage;
 
 
-import cn.humorchen.cache.MethodCache;
-import cn.humorchen.cache.serialize.MethodCacheArgumentSerializer;
+import cn.humorchen.methodcache.MethodCache;
+import cn.humorchen.methodcache.serialize.MethodCacheArgumentSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Method;

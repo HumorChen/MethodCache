@@ -1,19 +1,19 @@
-package cn.humorchen.cache.config;
+package cn.humorchen.methodcache.config;
 
-import cn.humorchen.cache.MethodCacheAspect;
-import cn.humorchen.cache.enhance.MethodCacheCountEnhancer;
-import cn.humorchen.cache.log.DefaultAsyncQueueMethodCacheLogger;
-import cn.humorchen.cache.log.MethodCacheLogLevel;
-import cn.humorchen.cache.log.MethodCacheLogger;
-import cn.humorchen.cache.serialize.DefaultJsonMethodCacheSerializer;
-import cn.humorchen.cache.serialize.DefaultMethodCacheArgumentSerializer;
-import cn.humorchen.cache.serialize.MethodCacheArgumentSerializer;
-import cn.humorchen.cache.serialize.MethodCacheSerializer;
-import cn.humorchen.cache.storage.DefaultLocalMemoryMethodCacheStorageEngine;
-import cn.humorchen.cache.storage.DefaultMethodCacheStorageKeyGenerator;
-import cn.humorchen.cache.storage.MethodCacheStorageEngine;
-import cn.humorchen.cache.storage.MethodCacheStorageKeyGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
+import cn.humorchen.methodcache.enhance.MethodCacheCountEnhancer;
+import cn.humorchen.methodcache.log.DefaultAsyncQueueMethodCacheLogger;
+import cn.humorchen.methodcache.log.MethodCacheLogLevel;
+import cn.humorchen.methodcache.log.MethodCacheLogger;
+import cn.humorchen.methodcache.lru.MethodCacheKeyLruManager;
+import cn.humorchen.methodcache.lru.MethodCacheKeyManager;
+import cn.humorchen.methodcache.serialize.DefaultJsonMethodCacheSerializer;
+import cn.humorchen.methodcache.serialize.DefaultMethodCacheArgumentSerializer;
+import cn.humorchen.methodcache.serialize.MethodCacheArgumentSerializer;
+import cn.humorchen.methodcache.serialize.MethodCacheSerializer;
+import cn.humorchen.methodcache.storage.DefaultLocalMemoryMethodCacheStorageEngine;
+import cn.humorchen.methodcache.storage.DefaultMethodCacheStorageKeyGenerator;
+import cn.humorchen.methodcache.storage.MethodCacheStorageEngine;
+import cn.humorchen.methodcache.storage.MethodCacheStorageKeyGenerator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -99,5 +99,15 @@ public class MethodCacheConfiguration {
         return new MethodCacheCountEnhancer();
     }
 
+
+    /**
+     * 注册默认的key管理器
+     * @return
+     */
+    @Bean
+    @ConditionalOnMissingBean(MethodCacheKeyManager.class)
+    public MethodCacheKeyManager registerMethodCacheKeyLRUManager(){
+        return new MethodCacheKeyLruManager(65535);
+    }
 
 }

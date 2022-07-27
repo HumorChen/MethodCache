@@ -1,6 +1,6 @@
-package cn.humorchen.cache.enhance;
+package cn.humorchen.methodcache.enhance;
 
-import cn.humorchen.cache.MethodCache;
+import cn.humorchen.methodcache.MethodCache;
 import org.aspectj.lang.reflect.MethodSignature;
 
 /**
@@ -33,7 +33,11 @@ public interface MethodCacheEnhancer {
      * @param cls 被调用方法所在类
      * @param methodSignature 方法声明
      * @param cached 本次调用是否命中缓存
+     * @param returnObj 返回对象
+     * @param removedKey 被移除的key
      * @param args 方法调用参数
      */
-    void after(String id, MethodCache methodCache, String key, long currentTime,Class<?> cls, MethodSignature methodSignature, boolean cached, Object... args);
+    void after(String id, MethodCache methodCache, String key, long currentTime,Class<?> cls, MethodSignature methodSignature, boolean cached,
+               Object returnObj,String removedKey,
+               Object... args);
 }

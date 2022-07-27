@@ -1,6 +1,6 @@
-package cn.humorchen.cache.storage;
+package cn.humorchen.methodcache.storage;
 
-import cn.humorchen.cache.MethodCache;
+import cn.humorchen.methodcache.MethodCache;
 
 import java.lang.reflect.Method;
 
