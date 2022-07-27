@@ -432,3 +432,17 @@ public interface MethodCacheEnhancer {
 }
 
 ```
+
+### 缓存淘汰算法
+#### LRU实现
+```java
+/**
+ * @see cn.humorchen.methodcache.lru.MethodCacheKeyLruManager
+ */
+/**
+ * lru算法实现key管理
+ * least recently use 最近未使用淘汰，使用了就放最前面
+ * @author humorchen
+ * @date 2022/7/26 20:40
+ */
+```
